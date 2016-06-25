@@ -2,6 +2,14 @@
 //gets the color of the button that is currently selected
 var color = $(".selected").css( "background-color" );
 
+var $canvas = $("canvas");
+
+//selects and assigns the canvas element
+var ctx = $canvas[0].getContext("2d");
+
+var lastEvent;
+var mouseDown = false;
+
 //updates the new color on the spam element
 function changeColor() {
   //selects and assigns the values from each slider
@@ -41,3 +49,33 @@ $("#revealColorSelect").click(function() {
 	$(".controls ul").append($newColor);
 	$newColor.click();
   });
+  
+
+  $canvas.mousedown(function(e) {
+    lastEvent = e;
+	mouseDown = true;
+  }).mousemove(function(e) {
+   
+    if(mouseDown) {
+      ctx.beginPath();
+	  //Where the line starts
+	  ctx.moveTo(lastEvent.offsetX, lastEvent.offsetY);
+	  //Where the line is going to
+	  ctx.lineTo(e.offsetX, e.offsetY);
+	  //Sets the line color to the color of the selected button
+	  ctx.strokeStyle = color;
+	  ctx.stroke();
+	}  
+	
+	//Updates the value of the lastEvent
+	lastEvent = e;
+  }).mouseup(function() {
+    mouseDown = false;
+  //If mouse cursor exits the canvas
+  }).mouseleave(function() {
+    //Calls the mouseup event
+    $canvas.mouseup();
+  });
+  
+  
+  
